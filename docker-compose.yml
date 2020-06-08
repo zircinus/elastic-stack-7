@@ -2,30 +2,35 @@ version: "3.8"
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.7.1
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
     environment:
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - discovery_type=single-node
+      - discovery.type=single-node
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
       - 9300:9300
+    networks:
+      elasticnet:
 
   logstack:
     image: docker.elastic.co/logstash/logstash:7.7.1
     volumes:
       - logstack_data:/usr/share/logstack/pipeline
+    networks:
+      elasticnet:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.7.1
     ports:
       - 5601:5601
+    networks:
+      elasticnet:
 
 volumes:
   elasticsearch_data:
   logstack_data:
+
+networks:
+  elasticnet:
